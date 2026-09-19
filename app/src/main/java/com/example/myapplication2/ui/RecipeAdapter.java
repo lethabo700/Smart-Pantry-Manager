@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication2.R;
+import com.example.myapplication2.databinding.ItemRecipeBinding;
 import com.example.myapplication2.model.Recipe;
 
 public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeViewHolder> {
@@ -29,8 +30,8 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeViewH
     @NonNull
     @Override
     public RecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recipe, parent, false);
-        return new RecipeViewHolder(view);
+        ItemRecipeBinding binding = ItemRecipeBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        return new RecipeViewHolder(binding);
     }
 
     @Override
@@ -40,15 +41,15 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeViewH
     }
 
     static class RecipeViewHolder extends RecyclerView.ViewHolder {
-        private final TextView textName;
+        private final ItemRecipeBinding binding;
 
-        public RecipeViewHolder(@NonNull View itemView) {
-            super(itemView);
-            textName = itemView.findViewById(R.id.text_recipe_name);
+        public RecipeViewHolder(@NonNull ItemRecipeBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
         }
 
         public void bind(Recipe recipe, OnRecipeClickListener listener) {
-            textName.setText(recipe.getName());
+            binding.textRecipeName.setText(recipe.getName());
             itemView.setOnClickListener(v -> listener.onRecipeClick(recipe));
         }
     }

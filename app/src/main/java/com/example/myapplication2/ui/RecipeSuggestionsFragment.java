@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication2.R;
+import com.example.myapplication2.databinding.FragmentRecipeSuggestionsBinding;
 import com.example.myapplication2.model.Recipe;
 import com.example.myapplication2.viewmodel.RecipeViewModel;
 
@@ -21,15 +22,16 @@ public class RecipeSuggestionsFragment extends Fragment {
 
     private RecipeViewModel viewModel;
     private RecipeAdapter adapter;
-    private TextView textNoMatches;
+    private FragmentRecipeSuggestionsBinding binding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_recipe_suggestions, container, false);
+        binding = FragmentRecipeSuggestionsBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
 
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_recipes);
-        textNoMatches = view.findViewById(R.id.text_no_matches);
+        RecyclerView recyclerView = binding.recyclerViewRecipes;
+        TextView textNoMatches = binding.textNoMatches;
 
         adapter = new RecipeAdapter(new RecipeAdapter.RecipeDiff(), recipe -> {
             Intent intent = new Intent(getContext(), RecipeDetailActivity.class);
@@ -49,6 +51,12 @@ public class RecipeSuggestionsFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
     @Override

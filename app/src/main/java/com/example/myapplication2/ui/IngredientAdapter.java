@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication2.R;
+import com.example.myapplication2.databinding.ItemIngredientBinding;
 import com.example.myapplication2.model.Ingredient;
 
 import java.text.SimpleDateFormat;
@@ -35,8 +36,8 @@ public class IngredientAdapter extends ListAdapter<Ingredient, IngredientAdapter
     @NonNull
     @Override
     public IngredientViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_ingredient, parent, false);
-        return new IngredientViewHolder(view);
+        ItemIngredientBinding binding = ItemIngredientBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        return new IngredientViewHolder(binding);
     }
 
     @Override
@@ -46,33 +47,27 @@ public class IngredientAdapter extends ListAdapter<Ingredient, IngredientAdapter
     }
 
     static class IngredientViewHolder extends RecyclerView.ViewHolder {
-        private final TextView textName;
-        private final TextView textQuantity;
-        private final TextView textExpiry;
-        private final ImageButton buttonDelete;
+        private final ItemIngredientBinding binding;
 
-        public IngredientViewHolder(@NonNull View itemView) {
-            super(itemView);
-            textName = itemView.findViewById(R.id.text_name);
-            textQuantity = itemView.findViewById(R.id.text_quantity);
-            textExpiry = itemView.findViewById(R.id.text_expiry);
-            buttonDelete = itemView.findViewById(R.id.button_delete);
+        public IngredientViewHolder(@NonNull ItemIngredientBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
         }
 
         public void bind(Ingredient ingredient, OnIngredientClickListener listener) {
-            textName.setText(ingredient.getName());
-            textQuantity.setText(ingredient.getQuantity() + " " + ingredient.getUnit());
+            binding.textName.setText(ingredient.getName());
+            binding.textQuantity.setText(ingredient.getQuantity() + " " + ingredient.getUnit());
             
             if (ingredient.getExpiryDate() > 0) {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                textExpiry.setText("Expires: " + sdf.format(new Date(ingredient.getExpiryDate())));
-                textExpiry.setVisibility(View.VISIBLE);
+                binding.textExpiry.setText("Expires: " + sdf.format(new Date(ingredient.getExpiryDate())));
+                binding.textExpiry.setVisibility(View.VISIBLE);
             } else {
-                textExpiry.setVisibility(View.GONE);
+                binding.textExpiry.setVisibility(View.GONE);
             }
 
             itemView.setOnClickListener(v -> listener.onIngredientClick(ingredient));
-            buttonDelete.setOnClickListener(v -> listener.onDeleteClick(ingredient));
+            binding.buttonDelete.setOnClickListener(v -> listener.onDeleteClick(ingredient));
         }
     }
 

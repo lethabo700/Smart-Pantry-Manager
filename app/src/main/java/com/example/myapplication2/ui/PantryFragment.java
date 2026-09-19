@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication2.R;
+import com.example.myapplication2.databinding.FragmentPantryBinding;
 import com.example.myapplication2.model.Ingredient;
 import com.example.myapplication2.viewmodel.PantryViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -22,16 +23,17 @@ public class PantryFragment extends Fragment {
 
     private PantryViewModel viewModel;
     private IngredientAdapter adapter;
-    private TextView textEmpty;
+    private FragmentPantryBinding binding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_pantry, container, false);
+        binding = FragmentPantryBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
 
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_pantry);
-        textEmpty = view.findViewById(R.id.text_empty_pantry);
-        FloatingActionButton fab = view.findViewById(R.id.fab_add_ingredient);
+        RecyclerView recyclerView = binding.recyclerViewPantry;
+        TextView textEmpty = binding.textEmptyPantry;
+        FloatingActionButton fab = binding.fabAddIngredient;
 
         adapter = new IngredientAdapter(new IngredientAdapter.IngredientDiff(), new IngredientAdapter.OnIngredientClickListener() {
             @Override
@@ -70,5 +72,11 @@ public class PantryFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

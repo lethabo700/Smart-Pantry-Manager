@@ -14,43 +14,47 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.myapplication2.R;
+import com.example.myapplication2.databinding.FragmentSettingsBinding;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 public class SettingsFragment extends Fragment {
 
-    private SwitchMaterial switchAlerts;
-    private RadioGroup radioGroupUnits;
+    private FragmentSettingsBinding binding;
     private SharedPreferences sharedPreferences;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_settings, container, false);
-
-        switchAlerts = view.findViewById(R.id.switch_expiry_alerts);
-        radioGroupUnits = view.findViewById(R.id.radio_group_units);
+        binding = FragmentSettingsBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
         
         sharedPreferences = getActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE);
 
         // Load settings
-        switchAlerts.setChecked(sharedPreferences.getBoolean("expiry_alerts", true));
+        binding.switchExpiryAlerts.setChecked(sharedPreferences.getBoolean("expiry_alerts", true));
         String unitPref = sharedPreferences.getString("unit_pref", "metric");
         if (unitPref.equals("metric")) {
-            ((RadioButton)view.findViewById(R.id.radio_metric)).setChecked(true);
+            binding.radioMetric.setChecked(true);
         } else {
-            ((RadioButton)view.findViewById(R.id.radio_imperial)).setChecked(true);
+            binding.radioImperial.setChecked(true);
         }
 
         // Save settings
-        switchAlerts.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        binding.switchExpiryAlerts.setOnCheckedChangeListener((buttonView, isChecked) -> {
             sharedPreferences.edit().putBoolean("expiry_alerts", isChecked).apply();
         });
 
-        radioGroupUnits.setOnCheckedChangeListener((group, checkedId) -> {
+        binding.radioGroupUnits.setOnCheckedChangeListener((group, checkedId) -> {
             String pref = (checkedId == R.id.radio_metric) ? "metric" : "imperial";
             sharedPreferences.edit().putString("unit_pref", pref).apply();
         });
 
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

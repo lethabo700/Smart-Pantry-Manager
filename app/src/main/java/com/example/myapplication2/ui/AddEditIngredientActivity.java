@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapplication2.R;
+import com.example.myapplication2.databinding.ActivityAddEditIngredientBinding;
 import com.example.myapplication2.model.Ingredient;
 import com.example.myapplication2.viewmodel.PantryViewModel;
 import com.google.android.material.textfield.TextInputEditText;
@@ -20,8 +21,7 @@ import java.util.Locale;
 
 public class AddEditIngredientActivity extends AppCompatActivity {
 
-    private TextInputEditText editName, editQuantity, editUnit;
-    private Button buttonPickDate, buttonSave;
+    private ActivityAddEditIngredientBinding binding;
     private long selectedExpiryDate = 0;
     private PantryViewModel viewModel;
     private int ingredientId = -1;
@@ -29,29 +29,24 @@ public class AddEditIngredientActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_edit_ingredient);
-
-        editName = findViewById(R.id.edit_text_name);
-        editQuantity = findViewById(R.id.edit_text_quantity);
-        editUnit = findViewById(R.id.edit_text_unit);
-        buttonPickDate = findViewById(R.id.button_pick_date);
-        buttonSave = findViewById(R.id.button_save);
+        binding = ActivityAddEditIngredientBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         viewModel = new ViewModelProvider(this).get(PantryViewModel.class);
 
         if (getIntent().hasExtra("id")) {
             ingredientId = getIntent().getIntExtra("id", -1);
-            editName.setText(getIntent().getStringExtra("name"));
-            editQuantity.setText(String.valueOf(getIntent().getDoubleExtra("quantity", 0.0)));
-            editUnit.setText(getIntent().getStringExtra("unit"));
+            binding.editTextName.setText(getIntent().getStringExtra("name"));
+            binding.editTextQuantity.setText(String.valueOf(getIntent().getDoubleExtra("quantity", 0.0)));
+            binding.editTextUnit.setText(getIntent().getStringExtra("unit"));
             selectedExpiryDate = getIntent().getLongExtra("expiry", 0);
             if (selectedExpiryDate > 0) {
                 updateDateButton();
             }
         }
 
-        buttonPickDate.setOnClickListener(v -> showDatePicker());
-        buttonSave.setOnClickListener(v -> saveIngredient());
+        binding.buttonPickDate.setOnClickListener(v -> showDatePicker());
+        binding.buttonSave.setOnClickListener(v -> saveIngredient());
     }
 
     private void showDatePicker() {
@@ -68,31 +63,31 @@ public class AddEditIngredientActivity extends AppCompatActivity {
 
     private void updateDateButton() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        buttonPickDate.setText(sdf.format(new Date(selectedExpiryDate)));
+        binding.buttonPickDate.setText(sdf.format(new Date(selectedExpiryDate)));
     }
 
     private void saveIngredient() {
-        String name = editName.getText().toString().trim();
-        String quantityStr = editQuantity.getText().toString().trim();
-        String unit = editUnit.getText().toString().trim();
+        String name = binding.editTextName.getText().toString().trim();
+        String quantityStr = binding.editTextQuantity.getText().toString().trim();
+        String unit = binding.editTextUnit.getText().toString().trim();
 
         if (name.isEmpty()) {
-            editName.setError("Name is required");
+            binding.editTextName.setError("Name is required");
             return;
         }
         if (quantityStr.isEmpty()) {
-            editQuantity.setError("Quantity is required");
+            binding.editTextQuantity.setError("Quantity is required");
             return;
         }
         double quantity;
         try {
             quantity = Double.parseDouble(quantityStr);
         } catch (NumberFormatException e) {
-            editQuantity.setError("Invalid quantity");
+            binding.editTextQuantity.setError("Invalid quantity");
             return;
         }
         if (unit.isEmpty()) {
-            editUnit.setError("Unit is required");
+            binding.editTextUnit.setError("Unit is required");
             return;
         }
 

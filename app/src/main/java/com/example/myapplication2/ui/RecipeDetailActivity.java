@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapplication2.R;
+import com.example.myapplication2.databinding.ActivityRecipeDetailBinding;
 import com.example.myapplication2.model.Recipe;
 import com.example.myapplication2.model.RecipeIngredient;
 import com.example.myapplication2.viewmodel.RecipeViewModel;
@@ -16,17 +17,14 @@ import java.util.List;
 
 public class RecipeDetailActivity extends AppCompatActivity {
 
-    private TextView textName, textIngredients, textInstructions;
+    private ActivityRecipeDetailBinding binding;
     private RecipeViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recipe_detail);
-
-        textName = findViewById(R.id.text_detail_name);
-        textIngredients = findViewById(R.id.text_detail_ingredients);
-        textInstructions = findViewById(R.id.text_detail_instructions);
+        binding = ActivityRecipeDetailBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         viewModel = new ViewModelProvider(this).get(RecipeViewModel.class);
 
@@ -43,8 +41,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
             runOnUiThread(() -> {
                 if (recipe != null) {
-                    textName.setText(recipe.getName());
-                    textInstructions.setText(recipe.getInstructions());
+                    binding.textDetailName.setText(recipe.getName());
+                    binding.textDetailInstructions.setText(recipe.getInstructions());
                     
                     StringBuilder sb = new StringBuilder();
                     for (RecipeIngredient ri : ingredients) {
@@ -52,7 +50,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
                           .append(": ").append(ri.getRequiredQuantity())
                           .append(" ").append(ri.getUnit()).append("\n");
                     }
-                    textIngredients.setText(sb.toString());
+                    binding.textDetailIngredients.setText(sb.toString());
                 }
             });
         });
