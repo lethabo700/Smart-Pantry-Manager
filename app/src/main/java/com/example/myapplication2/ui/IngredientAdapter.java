@@ -11,11 +11,14 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import androidx.core.content.ContextCompat;
+
 import com.example.myapplication2.R;
 import com.example.myapplication2.databinding.ItemIngredientBinding;
 import com.example.myapplication2.model.Ingredient;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -62,8 +65,23 @@ public class IngredientAdapter extends ListAdapter<Ingredient, IngredientAdapter
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                 binding.textExpiry.setText("Expires: " + sdf.format(new Date(ingredient.getExpiryDate())));
                 binding.textExpiry.setVisibility(View.VISIBLE);
+                
+                // Expiry Alert Logic
+                long currentTime = System.currentTimeMillis();
+                long threeDaysInMillis = 3L * 24 * 60 * 60 * 1000;
+                
+                int colorRes;
+                if (ingredient.getExpiryDate() < currentTime) {
+                    colorRes = R.color.expiry_red; // Expired
+                } else if (ingredient.getExpiryDate() < currentTime + threeDaysInMillis) {
+                    colorRes = R.color.expiry_orange; // Expiring soon (within 3 days)
+                } else {
+                    colorRes = R.color.expiry_green; // Fresh
+                }
+                binding.expiryIndicator.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), colorRes));
             } else {
                 binding.textExpiry.setVisibility(View.GONE);
+                binding.expiryIndicator.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.expiry_green));
             }
 
             itemView.setOnClickListener(v -> listener.onIngredientClick(ingredient));
