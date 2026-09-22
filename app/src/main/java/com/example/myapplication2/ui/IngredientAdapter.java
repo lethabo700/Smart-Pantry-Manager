@@ -49,6 +49,10 @@ public class IngredientAdapter extends ListAdapter<Ingredient, IngredientAdapter
         holder.bind(current, listener);
     }
 
+    public Ingredient getIngredientAt(int position) {
+        return getItem(position);
+    }
+
     static class IngredientViewHolder extends RecyclerView.ViewHolder {
         private final ItemIngredientBinding binding;
 
