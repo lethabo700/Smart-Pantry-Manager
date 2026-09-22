@@ -11,9 +11,11 @@
         android:padding="16dp">
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Ingredient Name">
+            android:hint="Ingredient Name"
+            app:errorEnabled="true">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_text_name"
                 android:layout_width="match_parent"
@@ -22,10 +24,12 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_quantity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Quantity">
+            android:hint="Quantity"
+            app:errorEnabled="true">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_text_quantity"
                 android:layout_width="match_parent"
@@ -34,10 +38,12 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_unit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Unit (e.g. g, pcs, cup)">
+            android:hint="Unit (e.g. g, pcs, cup)"
+            app:errorEnabled="true">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_text_unit"
                 android:layout_width="match_parent"

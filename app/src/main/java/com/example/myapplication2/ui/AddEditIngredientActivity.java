@@ -2,6 +2,8 @@ package com.example.myapplication2.ui;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,8 +46,46 @@ public class AddEditIngredientActivity extends AppCompatActivity {
             }
         }
 
+        setupRealTimeValidation();
+
         binding.buttonPickDate.setOnClickListener(v -> showDatePicker());
         binding.buttonSave.setOnClickListener(v -> saveIngredient());
+    }
+
+    private void setupRealTimeValidation() {
+        binding.editTextName.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().trim().isEmpty()) {
+                    binding.layoutName.setError(null);
+                }
+            }
+        });
+
+        binding.editTextQuantity.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String input = s.toString().trim();
+                if (!input.isEmpty()) {
+                    try {
+                        double quantity = Double.parseDouble(input);
+                        if (quantity > 0) {
+                            binding.layoutQuantity.setError(null);
+                        }
+                    } catch (NumberFormatException ignored) {
+                    }
+                }
+            }
+        });
+
+        binding.editTextUnit.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().trim().isEmpty()) {
+                    binding.layoutUnit.setError(null);
+                }
+            }
+        });
     }
 
     private void showDatePicker() {
@@ -70,23 +110,42 @@ public class AddEditIngredientActivity extends AppCompatActivity {
         String quantityStr = binding.editTextQuantity.getText().toString().trim();
         String unit = binding.editTextUnit.getText().toString().trim();
 
+        boolean isValid = true;
+
         if (name.isEmpty()) {
-            binding.editTextName.setError("Name is required");
-            return;
+            binding.layoutName.setError("Name is required");
+            isValid = false;
+        } else {
+            binding.layoutName.setError(null);
         }
+
+        double quantity = 0.0;
         if (quantityStr.isEmpty()) {
-            binding.editTextQuantity.setError("Quantity is required");
-            return;
+            binding.layoutQuantity.setError("Quantity is required");
+            isValid = false;
+        } else {
+            try {
+                quantity = Double.parseDouble(quantityStr);
+                if (quantity <= 0) {
+                    binding.layoutQuantity.setError("Quantity must be greater than 0");
+                    isValid = false;
+                } else {
+                    binding.layoutQuantity.setError(null);
+                }
+            } catch (NumberFormatException e) {
+                binding.layoutQuantity.setError("Invalid quantity number");
+                isValid = false;
+            }
         }
-        double quantity;
-        try {
-            quantity = Double.parseDouble(quantityStr);
-        } catch (NumberFormatException e) {
-            binding.editTextQuantity.setError("Invalid quantity");
-            return;
-        }
+
         if (unit.isEmpty()) {
-            binding.editTextUnit.setError("Unit is required");
+            binding.layoutUnit.setError("Unit is required");
+            isValid = false;
+        } else {
+            binding.layoutUnit.setError(null);
+        }
+
+        if (!isValid) {
             return;
         }
 
@@ -101,5 +160,10 @@ public class AddEditIngredientActivity extends AppCompatActivity {
         }
         finish();
         NavigationUtils.applyBackwardTransition(this);
+    }
+
+    private abstract static class SimpleTextWatcher implements TextWatcher {
+        @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        @Override public void afterTextChanged(Editable s) {}
     }
 }
