@@ -1,6 +1,5 @@
 package com.example.myapplication2.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +12,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.myapplication2.R;
 import com.example.myapplication2.databinding.FragmentRecipeSuggestionsBinding;
-import com.example.myapplication2.model.Recipe;
+import com.example.myapplication2.util.NavigationUtils;
 import com.example.myapplication2.viewmodel.RecipeViewModel;
 
 public class RecipeSuggestionsFragment extends Fragment {
@@ -34,12 +32,7 @@ public class RecipeSuggestionsFragment extends Fragment {
         TextView textNoMatches = binding.textNoMatches;
 
         adapter = new RecipeAdapter(new RecipeAdapter.RecipeDiff(), recipe -> {
-            Intent intent = new Intent(getContext(), RecipeDetailActivity.class);
-            intent.putExtra("recipe_id", recipe.getId());
-            startActivity(intent);
-            if (getActivity() != null) {
-                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
+            NavigationUtils.navigateToRecipeDetail(getContext(), getActivity(), recipe);
         });
 
         recyclerView.setAdapter(adapter);

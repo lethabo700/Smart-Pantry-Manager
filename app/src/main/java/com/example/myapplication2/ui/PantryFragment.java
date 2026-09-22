@@ -1,6 +1,5 @@
 package com.example.myapplication2.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +13,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.myapplication2.R;
 import com.example.myapplication2.databinding.FragmentPantryBinding;
 import com.example.myapplication2.model.Ingredient;
+import com.example.myapplication2.util.NavigationUtils;
 import com.example.myapplication2.viewmodel.PantryViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -40,16 +39,7 @@ public class PantryFragment extends Fragment {
         adapter = new IngredientAdapter(new IngredientAdapter.IngredientDiff(), new IngredientAdapter.OnIngredientClickListener() {
             @Override
             public void onIngredientClick(Ingredient ingredient) {
-                Intent intent = new Intent(getContext(), AddEditIngredientActivity.class);
-                intent.putExtra("id", ingredient.getId());
-                intent.putExtra("name", ingredient.getName());
-                intent.putExtra("quantity", ingredient.getQuantity());
-                intent.putExtra("unit", ingredient.getUnit());
-                intent.putExtra("expiry", ingredient.getExpiryDate());
-                startActivity(intent);
-                if (getActivity() != null) {
-                    getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                }
+                NavigationUtils.navigateToEditIngredient(getContext(), getActivity(), ingredient);
             }
             @Override
             public void onDeleteClick(Ingredient ingredient) {
@@ -84,13 +74,7 @@ public class PantryFragment extends Fragment {
             textEmpty.setVisibility(ingredients.isEmpty() ? View.VISIBLE : View.GONE);
         });
 
-        fab.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), AddEditIngredientActivity.class);
-            startActivity(intent);
-            if (getActivity() != null) {
-                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-        });
+        fab.setOnClickListener(v -> NavigationUtils.navigateToAddIngredient(getContext(), getActivity()));
 
         return view;
     }

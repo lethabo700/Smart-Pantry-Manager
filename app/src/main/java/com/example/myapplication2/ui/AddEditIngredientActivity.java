@@ -2,17 +2,16 @@ package com.example.myapplication2.ui;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.myapplication2.R;
 import com.example.myapplication2.databinding.ActivityAddEditIngredientBinding;
 import com.example.myapplication2.model.Ingredient;
+import com.example.myapplication2.util.Constants;
+import com.example.myapplication2.util.NavigationUtils;
 import com.example.myapplication2.viewmodel.PantryViewModel;
-import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -34,12 +33,12 @@ public class AddEditIngredientActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this).get(PantryViewModel.class);
 
-        if (getIntent().hasExtra("id")) {
-            ingredientId = getIntent().getIntExtra("id", -1);
-            binding.editTextName.setText(getIntent().getStringExtra("name"));
-            binding.editTextQuantity.setText(String.valueOf(getIntent().getDoubleExtra("quantity", 0.0)));
-            binding.editTextUnit.setText(getIntent().getStringExtra("unit"));
-            selectedExpiryDate = getIntent().getLongExtra("expiry", 0);
+        if (getIntent().hasExtra(Constants.EXTRA_INGREDIENT_ID)) {
+            ingredientId = getIntent().getIntExtra(Constants.EXTRA_INGREDIENT_ID, -1);
+            binding.editTextName.setText(getIntent().getStringExtra(Constants.EXTRA_INGREDIENT_NAME));
+            binding.editTextQuantity.setText(String.valueOf(getIntent().getDoubleExtra(Constants.EXTRA_INGREDIENT_QUANTITY, 0.0)));
+            binding.editTextUnit.setText(getIntent().getStringExtra(Constants.EXTRA_INGREDIENT_UNIT));
+            selectedExpiryDate = getIntent().getLongExtra(Constants.EXTRA_INGREDIENT_EXPIRY, 0);
             if (selectedExpiryDate > 0) {
                 updateDateButton();
             }
@@ -101,6 +100,6 @@ public class AddEditIngredientActivity extends AppCompatActivity {
             Toast.makeText(this, "Ingredient added", Toast.LENGTH_SHORT).show();
         }
         finish();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        NavigationUtils.applyBackwardTransition(this);
     }
 }

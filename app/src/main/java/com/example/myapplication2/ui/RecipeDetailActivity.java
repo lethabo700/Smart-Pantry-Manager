@@ -1,15 +1,15 @@
 package com.example.myapplication2.ui;
 
 import android.os.Bundle;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.myapplication2.R;
 import com.example.myapplication2.databinding.ActivityRecipeDetailBinding;
 import com.example.myapplication2.model.Recipe;
 import com.example.myapplication2.model.RecipeIngredient;
+import com.example.myapplication2.util.Constants;
+import com.example.myapplication2.util.NavigationUtils;
 import com.example.myapplication2.viewmodel.RecipeViewModel;
 import com.example.myapplication2.db.PantryDatabase;
 
@@ -28,7 +28,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this).get(RecipeViewModel.class);
 
-        int recipeId = getIntent().getIntExtra("recipe_id", -1);
+        int recipeId = getIntent().getIntExtra(Constants.EXTRA_RECIPE_ID, -1);
         if (recipeId != -1) {
             loadRecipeDetails(recipeId);
         }
@@ -59,6 +59,6 @@ public class RecipeDetailActivity extends AppCompatActivity {
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        NavigationUtils.applyBackwardTransition(this);
     }
 }
