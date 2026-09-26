@@ -29,6 +29,7 @@ public class PantryFragment extends Fragment {
     private PantryViewModel viewModel;
     private IngredientAdapter adapter;
     private FragmentPantryBinding binding;
+
     private List<Ingredient> fullIngredientList = new ArrayList<>();
     private String currentQuery = "";
 

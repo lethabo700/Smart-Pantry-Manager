@@ -31,6 +31,7 @@ public class NavigationUtils {
         intent.putExtra(Constants.EXTRA_INGREDIENT_QUANTITY, ingredient.getQuantity());
         intent.putExtra(Constants.EXTRA_INGREDIENT_UNIT, ingredient.getUnit());
         intent.putExtra(Constants.EXTRA_INGREDIENT_EXPIRY, ingredient.getExpiryDate());
+        intent.putExtra(Constants.EXTRA_INGREDIENT_CATEGORY, ingredient.getCategory());
         context.startActivity(intent);
         applyForwardTransition(hostActivity);
     }

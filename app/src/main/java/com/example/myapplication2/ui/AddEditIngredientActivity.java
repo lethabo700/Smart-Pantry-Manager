@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,6 +36,14 @@ public class AddEditIngredientActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this).get(PantryViewModel.class);
 
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_dropdown_item_1line,
+                Constants.DEFAULT_CATEGORIES
+        );
+        binding.autoCompleteCategory.setAdapter(categoryAdapter);
+
+        String initialCategory = "Pantry";
         if (getIntent().hasExtra(Constants.EXTRA_INGREDIENT_ID)) {
             ingredientId = getIntent().getIntExtra(Constants.EXTRA_INGREDIENT_ID, -1);
             binding.editTextName.setText(getIntent().getStringExtra(Constants.EXTRA_INGREDIENT_NAME));
@@ -44,7 +53,12 @@ public class AddEditIngredientActivity extends AppCompatActivity {
             if (selectedExpiryDate > 0) {
                 updateDateButton();
             }
+            String cat = getIntent().getStringExtra(Constants.EXTRA_INGREDIENT_CATEGORY);
+            if (cat != null && !cat.trim().isEmpty()) {
+                initialCategory = cat;
+            }
         }
+        binding.autoCompleteCategory.setText(initialCategory, false);
 
         setupRealTimeValidation();
 
@@ -149,7 +163,12 @@ public class AddEditIngredientActivity extends AppCompatActivity {
             return;
         }
 
-        Ingredient ingredient = new Ingredient(name, quantity, unit, selectedExpiryDate);
+        String category = binding.autoCompleteCategory.getText().toString().trim();
+        if (category.isEmpty()) {
+            category = "Pantry";
+        }
+
+        Ingredient ingredient = new Ingredient(name, quantity, unit, selectedExpiryDate, category);
         if (ingredientId != -1) {
             ingredient.setId(ingredientId);
             viewModel.update(ingredient);

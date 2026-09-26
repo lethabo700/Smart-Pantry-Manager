@@ -22,7 +22,7 @@ public interface PantryDao {
     @Delete
     void delete(Ingredient ingredient);
 
-    @Query("SELECT * FROM ingredients ORDER BY name ASC")
+    @Query("SELECT * FROM ingredients ORDER BY category ASC, name ASC")
     LiveData<List<Ingredient>> getAllIngredients();
     
     @Query("SELECT * FROM ingredients")

@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 public class IngredientAdapter extends ListAdapter<Ingredient, IngredientAdapter.IngredientViewHolder> {
 
@@ -88,6 +89,14 @@ public class IngredientAdapter extends ListAdapter<Ingredient, IngredientAdapter
                 binding.expiryIndicator.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.expiry_green));
             }
 
+            String category = ingredient.getCategory();
+            if (category != null && !category.trim().isEmpty()) {
+                binding.textCategory.setText("[" + category + "]");
+                binding.textCategory.setVisibility(View.VISIBLE);
+            } else {
+                binding.textCategory.setVisibility(View.GONE);
+            }
+
             itemView.setOnClickListener(v -> listener.onIngredientClick(ingredient));
             binding.buttonDelete.setOnClickListener(v -> listener.onDeleteClick(ingredient));
         }
@@ -104,7 +113,8 @@ public class IngredientAdapter extends ListAdapter<Ingredient, IngredientAdapter
             return oldItem.getName().equals(newItem.getName()) &&
                     oldItem.getQuantity() == newItem.getQuantity() &&
                     oldItem.getUnit().equals(newItem.getUnit()) &&
-                    oldItem.getExpiryDate() == newItem.getExpiryDate();
+                    oldItem.getExpiryDate() == newItem.getExpiryDate() &&
+                    Objects.equals(oldItem.getCategory(), newItem.getCategory());
         }
     }
 }

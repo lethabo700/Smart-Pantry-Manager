@@ -1,6 +1,7 @@
 package com.example.myapplication2.model;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "ingredients")
@@ -12,12 +13,19 @@ public class Ingredient {
     private double quantity;
     private String unit;
     private long expiryDate; // Timestamp
+    private String category;
 
-    public Ingredient(String name, double quantity, String unit, long expiryDate) {
+    public Ingredient(String name, double quantity, String unit, long expiryDate, String category) {
         this.name = name;
         this.quantity = quantity;
         this.unit = unit;
         this.expiryDate = expiryDate;
+        this.category = category != null && !category.trim().isEmpty() ? category : "Pantry";
+    }
+
+    @Ignore
+    public Ingredient(String name, double quantity, String unit, long expiryDate) {
+        this(name, quantity, unit, expiryDate, "Pantry");
     }
 
     // Getters and Setters
@@ -31,4 +39,6 @@ public class Ingredient {
     public void setUnit(String unit) { this.unit = unit; }
     public long getExpiryDate() { return expiryDate; }
     public void setExpiryDate(long expiryDate) { this.expiryDate = expiryDate; }
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 }

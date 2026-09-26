@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.myapplication2.dao.PantryDao;
@@ -17,7 +18,7 @@ import com.example.myapplication2.model.RecipeIngredient;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Ingredient.class, Recipe.class, RecipeIngredient.class}, version = 1, exportSchema = false)
+@Database(entities = {Ingredient.class, Recipe.class, RecipeIngredient.class}, version = 2, exportSchema = false)
 public abstract class PantryDatabase extends RoomDatabase {
     public abstract PantryDao pantryDao();
     public abstract RecipeDao recipeDao();
@@ -27,12 +28,21 @@ public abstract class PantryDatabase extends RoomDatabase {
     public static final ExecutorService databaseWriteExecutor =
             Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
+    public static final Migration MIGRATION_1_2 = new Migration(1, 2) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE ingredients ADD COLUMN category TEXT DEFAULT 'Pantry'");
+        }
+    };
+
     public static PantryDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (PantryDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                                     PantryDatabase.class, "pantry_database")
+                            .addMigrations(MIGRATION_1_2)
+                            .fallbackToDestructiveMigration()
                             .addCallback(sRoomDatabaseCallback)
                             .build();
                 }
