@@ -4,10 +4,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -20,11 +20,17 @@ import com.example.myapplication2.viewmodel.PantryViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 public class PantryFragment extends Fragment {
 
     private PantryViewModel viewModel;
     private IngredientAdapter adapter;
     private FragmentPantryBinding binding;
+    private List<Ingredient> fullIngredientList = new ArrayList<>();
+    private String currentQuery = "";
 
     @Nullable
     @Override
@@ -33,7 +39,6 @@ public class PantryFragment extends Fragment {
         View view = binding.getRoot();
 
         RecyclerView recyclerView = binding.recyclerViewPantry;
-        TextView textEmpty = binding.textEmptyPantry;
         FloatingActionButton fab = binding.fabAddIngredient;
 
         adapter = new IngredientAdapter(new IngredientAdapter.IngredientDiff(), new IngredientAdapter.OnIngredientClickListener() {
@@ -68,15 +73,57 @@ public class PantryFragment extends Fragment {
             }
         }).attachToRecyclerView(recyclerView);
 
+        binding.searchViewPantry.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                filterIngredients(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterIngredients(newText);
+                return true;
+            }
+        });
+
         viewModel = new ViewModelProvider(this).get(PantryViewModel.class);
         viewModel.getAllIngredients().observe(getViewLifecycleOwner(), ingredients -> {
-            adapter.submitList(ingredients);
-            textEmpty.setVisibility(ingredients.isEmpty() ? View.VISIBLE : View.GONE);
+            fullIngredientList = ingredients != null ? ingredients : new ArrayList<>();
+            filterIngredients(currentQuery);
         });
 
         fab.setOnClickListener(v -> NavigationUtils.navigateToAddIngredient(getContext(), getActivity()));
 
         return view;
+    }
+
+    private void filterIngredients(String query) {
+        currentQuery = query == null ? "" : query.trim().toLowerCase(Locale.getDefault());
+        List<Ingredient> filteredList = new ArrayList<>();
+
+        if (fullIngredientList != null) {
+            if (currentQuery.isEmpty()) {
+                filteredList.addAll(fullIngredientList);
+            } else {
+                for (Ingredient ingredient : fullIngredientList) {
+                    if (ingredient.getName().toLowerCase(Locale.getDefault()).contains(currentQuery)) {
+                        filteredList.add(ingredient);
+                    }
+                }
+            }
+        }
+
+        adapter.submitList(filteredList);
+
+        if (binding != null) {
+            if (filteredList.isEmpty()) {
+                binding.textEmptyPantry.setText(currentQuery.isEmpty() ? "Your pantry is empty!" : "No matching ingredients found");
+                binding.textEmptyPantry.setVisibility(View.VISIBLE);
+            } else {
+                binding.textEmptyPantry.setVisibility(View.GONE);
+            }
+        }
     }
 
     @Override
