@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.myapplication2.dao.PantryDao;
@@ -28,21 +27,14 @@ public abstract class PantryDatabase extends RoomDatabase {
     public static final ExecutorService databaseWriteExecutor =
             Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
-    public static final Migration MIGRATION_1_2 = new Migration(1, 2) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("ALTER TABLE ingredients ADD COLUMN category TEXT DEFAULT 'Pantry'");
-        }
-    };
-
     public static PantryDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (PantryDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                                    PantryDatabase.class, "pantry_database")
-                            .addMigrations(MIGRATION_1_2)
+                                    PantryDatabase.class, "smart_pantry_v2.db")
                             .fallbackToDestructiveMigration()
+                            .fallbackToDestructiveMigrationOnDowngrade()
                             .addCallback(sRoomDatabaseCallback)
                             .build();
                 }
@@ -56,10 +48,13 @@ public abstract class PantryDatabase extends RoomDatabase {
         public void onCreate(@NonNull SupportSQLiteDatabase db) {
             super.onCreate(db);
             databaseWriteExecutor.execute(() -> {
-                RecipeDao dao = INSTANCE.recipeDao();
-                
-                // Seed 20 Recipes
-                seedRecipes(dao);
+                PantryDatabase database = INSTANCE;
+                if (database != null) {
+                    database.runInTransaction(() -> {
+                        RecipeDao dao = database.recipeDao();
+                        seedRecipes(dao);
+                    });
+                }
             });
         }
     };

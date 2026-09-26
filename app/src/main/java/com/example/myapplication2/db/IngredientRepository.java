@@ -9,6 +9,7 @@ import com.example.myapplication2.dao.RecipeDao;
 import com.example.myapplication2.model.Ingredient;
 import com.example.myapplication2.model.Recipe;
 import com.example.myapplication2.model.RecipeIngredient;
+import com.example.myapplication2.model.RecipeWithIngredients;
 
 import java.util.List;
 
@@ -43,6 +44,7 @@ public class IngredientRepository {
 
     public List<Ingredient> getAllIngredientsSync() { return pantryDao.getAllIngredientsSync(); }
     public List<Recipe> getAllRecipesSync() { return recipeDao.getAllRecipesSync(); }
+    public List<RecipeWithIngredients> getAllRecipesWithIngredientsSync() { return recipeDao.getAllRecipesWithIngredientsSync(); }
     public List<RecipeIngredient> getIngredientsForRecipe(int recipeId) { return recipeDao.getIngredientsForRecipe(recipeId); }
     public Recipe getRecipeById(int recipeId) { return recipeDao.getRecipeById(recipeId); }
 }

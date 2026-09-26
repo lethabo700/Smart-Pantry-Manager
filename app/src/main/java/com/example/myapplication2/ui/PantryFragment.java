@@ -64,12 +64,14 @@ public class PantryFragment extends Fragment {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
-                if (position != RecyclerView.NO_POSITION) {
+                if (position != RecyclerView.NO_POSITION && position < adapter.getItemCount()) {
                     Ingredient ingredient = adapter.getIngredientAt(position);
-                    viewModel.delete(ingredient);
-                    Snackbar.make(binding.getRoot(), ingredient.getName() + " deleted", Snackbar.LENGTH_LONG)
-                            .setAction("Undo", v -> viewModel.insert(ingredient))
-                            .show();
+                    if (ingredient != null) {
+                        viewModel.delete(ingredient);
+                        Snackbar.make(binding.getRoot(), (ingredient.getName() != null ? ingredient.getName() : "Item") + " deleted", Snackbar.LENGTH_LONG)
+                                .setAction("Undo", v -> viewModel.insert(ingredient))
+                                .show();
+                    }
                 }
             }
         }).attachToRecyclerView(recyclerView);
@@ -108,14 +110,17 @@ public class PantryFragment extends Fragment {
                 filteredList.addAll(fullIngredientList);
             } else {
                 for (Ingredient ingredient : fullIngredientList) {
-                    if (ingredient.getName().toLowerCase(Locale.getDefault()).contains(currentQuery)) {
+                    if (ingredient != null && ingredient.getName() != null &&
+                            ingredient.getName().toLowerCase(Locale.getDefault()).contains(currentQuery)) {
                         filteredList.add(ingredient);
                     }
                 }
             }
         }
 
-        adapter.submitList(filteredList);
+        if (adapter != null) {
+            adapter.submitList(filteredList);
+        }
 
         if (binding != null) {
             if (filteredList.isEmpty()) {

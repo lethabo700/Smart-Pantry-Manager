@@ -3,22 +3,18 @@ package com.example.myapplication2.ui;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
-
-import androidx.core.content.ContextCompat;
 
 import com.example.myapplication2.R;
 import com.example.myapplication2.databinding.ItemIngredientBinding;
 import com.example.myapplication2.model.Ingredient;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
@@ -63,8 +59,10 @@ public class IngredientAdapter extends ListAdapter<Ingredient, IngredientAdapter
         }
 
         public void bind(Ingredient ingredient, OnIngredientClickListener listener) {
-            binding.textName.setText(ingredient.getName());
-            binding.textQuantity.setText(ingredient.getQuantity() + " " + ingredient.getUnit());
+            if (ingredient == null) return;
+
+            binding.textName.setText(ingredient.getName() != null ? ingredient.getName() : "");
+            binding.textQuantity.setText(ingredient.getQuantity() + " " + (ingredient.getUnit() != null ? ingredient.getUnit() : ""));
             
             if (ingredient.getExpiryDate() > 0) {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -97,8 +95,12 @@ public class IngredientAdapter extends ListAdapter<Ingredient, IngredientAdapter
                 binding.textCategory.setVisibility(View.GONE);
             }
 
-            itemView.setOnClickListener(v -> listener.onIngredientClick(ingredient));
-            binding.buttonDelete.setOnClickListener(v -> listener.onDeleteClick(ingredient));
+            itemView.setOnClickListener(v -> {
+                if (listener != null) listener.onIngredientClick(ingredient);
+            });
+            binding.buttonDelete.setOnClickListener(v -> {
+                if (listener != null) listener.onDeleteClick(ingredient);
+            });
         }
     }
 
@@ -110,9 +112,9 @@ public class IngredientAdapter extends ListAdapter<Ingredient, IngredientAdapter
 
         @Override
         public boolean areContentsTheSame(@NonNull Ingredient oldItem, @NonNull Ingredient newItem) {
-            return oldItem.getName().equals(newItem.getName()) &&
+            return Objects.equals(oldItem.getName(), newItem.getName()) &&
                     oldItem.getQuantity() == newItem.getQuantity() &&
-                    oldItem.getUnit().equals(newItem.getUnit()) &&
+                    Objects.equals(oldItem.getUnit(), newItem.getUnit()) &&
                     oldItem.getExpiryDate() == newItem.getExpiryDate() &&
                     Objects.equals(oldItem.getCategory(), newItem.getCategory());
         }

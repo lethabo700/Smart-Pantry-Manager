@@ -1,6 +1,7 @@
 package com.example.myapplication2.model;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "recipes")
@@ -11,6 +12,11 @@ public class Recipe {
     private String name;
     private String instructions;
 
+    public Recipe() {
+        // Default constructor for Room
+    }
+
+    @Ignore
     public Recipe(String name, String instructions) {
         this.name = name;
         this.instructions = instructions;

@@ -14,18 +14,24 @@ public class MatchingEngine {
      * Strict matching: every required ingredient must be present in sufficient quantity.
      */
     public static boolean canMakeRecipe(List<RecipeIngredient> required, List<Ingredient> pantry) {
+        if (required == null || pantry == null) return false;
+
         Map<String, Double> pantryMap = new HashMap<>();
         for (Ingredient item : pantry) {
-            String normalizedName = normalize(item.getName());
-            pantryMap.put(normalizedName, pantryMap.getOrDefault(normalizedName, 0.0) + item.getQuantity());
+            if (item != null && item.getName() != null) {
+                String normalizedName = normalize(item.getName());
+                pantryMap.put(normalizedName, pantryMap.getOrDefault(normalizedName, 0.0) + item.getQuantity());
+            }
         }
 
         for (RecipeIngredient req : required) {
-            String normalizedReqName = normalize(req.getIngredientName());
-            Double availableQuantity = pantryMap.get(normalizedReqName);
+            if (req != null && req.getIngredientName() != null) {
+                String normalizedReqName = normalize(req.getIngredientName());
+                Double availableQuantity = pantryMap.get(normalizedReqName);
 
-            if (availableQuantity == null || availableQuantity < req.getRequiredQuantity()) {
-                return false;
+                if (availableQuantity == null || availableQuantity < req.getRequiredQuantity()) {
+                    return false;
+                }
             }
         }
         return true;

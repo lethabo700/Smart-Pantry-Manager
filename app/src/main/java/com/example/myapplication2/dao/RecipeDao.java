@@ -8,6 +8,7 @@ import androidx.room.Transaction;
 
 import com.example.myapplication2.model.Recipe;
 import com.example.myapplication2.model.RecipeIngredient;
+import com.example.myapplication2.model.RecipeWithIngredients;
 
 import java.util.List;
 
@@ -24,6 +25,10 @@ public interface RecipeDao {
 
     @Query("SELECT * FROM recipes")
     List<Recipe> getAllRecipesSync();
+
+    @Transaction
+    @Query("SELECT * FROM recipes")
+    List<RecipeWithIngredients> getAllRecipesWithIngredientsSync();
 
     @Query("SELECT * FROM recipe_ingredients WHERE recipeId = :recipeId")
     List<RecipeIngredient> getIngredientsForRecipe(int recipeId);

@@ -3,16 +3,16 @@ package com.example.myapplication2.ui;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.myapplication2.R;
 import com.example.myapplication2.databinding.ItemRecipeBinding;
 import com.example.myapplication2.model.Recipe;
+
+import java.util.Objects;
 
 public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeViewHolder> {
 
@@ -49,8 +49,11 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeViewH
         }
 
         public void bind(Recipe recipe, OnRecipeClickListener listener) {
-            binding.textRecipeName.setText(recipe.getName());
-            itemView.setOnClickListener(v -> listener.onRecipeClick(recipe));
+            if (recipe == null) return;
+            binding.textRecipeName.setText(recipe.getName() != null ? recipe.getName() : "");
+            itemView.setOnClickListener(v -> {
+                if (listener != null) listener.onRecipeClick(recipe);
+            });
         }
     }
 
@@ -62,8 +65,8 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeViewH
 
         @Override
         public boolean areContentsTheSame(@NonNull Recipe oldItem, @NonNull Recipe newItem) {
-            return oldItem.getName().equals(newItem.getName()) &&
-                    oldItem.getInstructions().equals(newItem.getInstructions());
+            return Objects.equals(oldItem.getName(), newItem.getName()) &&
+                    Objects.equals(oldItem.getInstructions(), newItem.getInstructions());
         }
     }
 }

@@ -2,6 +2,7 @@ package com.example.myapplication2.model;
 
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
@@ -20,6 +21,11 @@ public class RecipeIngredient {
     private double requiredQuantity;
     private String unit;
 
+    public RecipeIngredient() {
+        // Default constructor for Room
+    }
+
+    @Ignore
     public RecipeIngredient(int recipeId, String ingredientName, double requiredQuantity, String unit) {
         this.recipeId = recipeId;
         this.ingredientName = ingredientName;

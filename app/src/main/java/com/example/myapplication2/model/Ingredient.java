@@ -1,5 +1,6 @@
 package com.example.myapplication2.model;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -13,8 +14,15 @@ public class Ingredient {
     private double quantity;
     private String unit;
     private long expiryDate; // Timestamp
+
+    @ColumnInfo(defaultValue = "Pantry")
     private String category;
 
+    public Ingredient() {
+        // Default constructor for Room
+    }
+
+    @Ignore
     public Ingredient(String name, double quantity, String unit, long expiryDate, String category) {
         this.name = name;
         this.quantity = quantity;

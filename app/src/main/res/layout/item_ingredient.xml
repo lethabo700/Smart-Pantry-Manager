@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.MaterialComponents.CardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
+    android:layout_marginStart="12dp"
+    android:layout_marginTop="6dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginBottom="6dp"
+    android:clickable="true"
+    android:focusable="true"
     app:cardCornerRadius="16dp"
-    app:cardElevation="4dp">
+    app:cardElevation="2dp"
+    app:strokeWidth="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -30,6 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textColor="?android:attr/textColorPrimary"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/text_quantity"
             app:layout_constraintStart_toStartOf="parent"
@@ -42,18 +50,21 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:text="1.0 unit"
+            android:textColor="?attr/colorPrimary"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/text_name"
             app:layout_constraintEnd_toStartOf="@+id/button_delete"
-            app:layout_constraintTop_toTopOf="@+id/text_name" />
+            app:layout_constraintTop_toTopOf="@+id/text_name"
+            android:text="1.0 unit" />
 
         <TextView
             android:id="@+id/text_expiry"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="6dp"
             android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="?android:attr/textColorSecondary"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_name"
             android:text="Expires: 2023-12-31" />
@@ -68,6 +79,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/text_expiry"
             app:layout_constraintStart_toEndOf="@+id/text_expiry"
             app:layout_constraintTop_toTopOf="@+id/text_expiry"
+            app:layout_goneMarginStart="16dp"
+            app:layout_goneMarginTop="6dp"
             android:text="[Pantry]" />
 
         <ImageButton

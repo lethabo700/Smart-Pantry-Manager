@@ -40,15 +40,19 @@ public class RecipeDetailActivity extends AppCompatActivity {
             List<RecipeIngredient> ingredients = viewModel.getIngredientsForRecipe(recipeId);
 
             runOnUiThread(() -> {
-                if (recipe != null) {
-                    binding.textDetailName.setText(recipe.getName());
-                    binding.textDetailInstructions.setText(recipe.getInstructions());
+                if (binding != null && recipe != null) {
+                    binding.textDetailName.setText(recipe.getName() != null ? recipe.getName() : "");
+                    binding.textDetailInstructions.setText(recipe.getInstructions() != null ? recipe.getInstructions() : "");
                     
                     StringBuilder sb = new StringBuilder();
-                    for (RecipeIngredient ri : ingredients) {
-                        sb.append("• ").append(ri.getIngredientName())
-                          .append(": ").append(ri.getRequiredQuantity())
-                          .append(" ").append(ri.getUnit()).append("\n");
+                    if (ingredients != null) {
+                        for (RecipeIngredient ri : ingredients) {
+                            if (ri != null) {
+                                sb.append("• ").append(ri.getIngredientName() != null ? ri.getIngredientName() : "")
+                                  .append(": ").append(ri.getRequiredQuantity())
+                                  .append(" ").append(ri.getUnit() != null ? ri.getUnit() : "").append("\n");
+                            }
+                        }
                     }
                     binding.textDetailIngredients.setText(sb.toString());
                 }
